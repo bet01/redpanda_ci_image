@@ -2,7 +2,7 @@
 
 CREATE_TOPICS=$@
 
-echo "initializing redpanda-init wrapper"
+echo "initializing redpanda-init wrapper with args: $@"
 echo "creating the following topics: ${CREATE_TOPICS}"
 
 IFS=', ' read -r -a topics <<< ${CREATE_TOPICS:?must specify topics as Docker argument CREATE_TOPICS}

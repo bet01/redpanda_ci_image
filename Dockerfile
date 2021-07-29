@@ -6,7 +6,4 @@ COPY docker/redpanda-init.sh /redpanda-init.sh
 
 COPY docker/redpanda.yml /etc/redpanda/redpanda.yml
 
-ENTRYPOINT ["/redpanda-init.sh"]
-
-CMD [${CREATE_TOPICS}]
-
+ENTRYPOINT /redpanda-init.sh ${CREATE_TOPICS}
