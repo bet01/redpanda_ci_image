@@ -6,4 +6,5 @@ COPY docker/redpanda-init.sh /redpanda-init.sh
 
 COPY docker/redpanda.yml /etc/redpanda/redpanda.yml
 
+EXPOSE 9092
 ENTRYPOINT /redpanda-init.sh ${CREATE_TOPICS}
