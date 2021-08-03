@@ -5,6 +5,11 @@ CREATE_TOPICS=$@
 echo "initializing redpanda-init wrapper with args: $@"
 echo "creating the following topics: ${CREATE_TOPICS}"
 
+if [ -z "${CREATE_TOPICS}" ]
+then
+    echo "No topics defined - exiting"
+fi
+
 IFS=', ' read -r -a topics <<< ${CREATE_TOPICS:?must specify topics as Docker argument CREATE_TOPICS}
 
 # create topic bash function - 
