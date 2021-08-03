@@ -6,10 +6,6 @@ COPY docker/redpanda-init.sh /redpanda-init.sh
 
 COPY docker/redpanda.yml /etc/redpanda/redpanda.yml
 
-HEALTHCHECK CMD timeout 1m bash -c '
-          until curl -f localhost:9644/metrics
-          do echo plantuml - trying to determine if server running ; sleep 20
-          done
-         '
+HEALTHCHECK CMD timeout 1m bash -c 'until curl -f localhost:9644/metrics; do echo redpanda - wait for metrics endpoint to be runnin; sleep 20; done'
 
 ENTRYPOINT /redpanda-init.sh ${CREATE_TOPICS}
