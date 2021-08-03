@@ -33,11 +33,6 @@ function create_topic() {
 /usr/bin/rpk \
   redpanda \
   start \
-  --smp \
-  "1" \
-  --reserve-memory \
-  0M \
-  --overprovisioned \
   --node-id \
   "0" \
   --kafka-addr \
