@@ -20,20 +20,23 @@ function create_topic() {
 
   args=(${1//:/ })
 
-  topic=${args[0]}
-  partitions=${args[1]}
+  args_length=${#args[@]}
 
-  if [[ -n $topic && -n $partitions ]]; then
-    res=$(rpk topic create $topic -p $partitions 2>&1)
-  elif [[ -n $topic ]]; then
-    res=$(rpk topic create -p 1 $topic 2>&1)
+  #echo "args : ${args[@]}"
+  #echo "args_length : ${args_length}"
+
+  if [[ $args_length > 1 && -n ${args[0]} && -n ${args[1]} ]]; then
+    topic=${args[0]} 
+    partitions=${args[1]} 
+  elif [[ $args_length == 1 && -n ${args[0]} ]]; then
+    topic=${args[0]} 
+    partitions=1
   else
-    echo "Bad input to create_topic function ${1}" >/dev/stderr
-    echo "Bad input to create_topic topic ${topic}" >/dev/stderr
-    echo "Bad input to create_topic topic ${partitions}" >/dev/stderr
-
+    echo "Bad input to create_topic function ${@}" >/dev/stderr
     exit 1
   fi
+
+  res=$(rpk topic create $topic -p $partitions 2>&1)
 
   if [[ $res =~ "Topic with this name already exists" || $res =~ "Created topic" ]]; then
     echo "topic now exists: ${topic}"
