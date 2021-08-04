@@ -1,23 +1,40 @@
 #!/bin/bash
 
+set -e -u
+
 CREATE_TOPICS=$@
 
 echo "initializing redpanda-init wrapper with args: $@"
 echo "creating the following topics: ${CREATE_TOPICS}"
 
-if [ -z "${CREATE_TOPICS}" ]
-then
-    echo "No topics defined - exiting"
-    exit 1
+if [ -z "${CREATE_TOPICS}" ]; then
+  echo "No topics defined - exiting"
+  exit 1
 fi
 
-IFS=', ' read -r -a topics <<< ${CREATE_TOPICS:?must specify topics as Docker argument CREATE_TOPICS}
+IFS=', ' read -r -a topics <<<${CREATE_TOPICS:?must specify topics as Docker argument CREATE_TOPICS}
 
-# create topic bash function - 
+# create topic bash function -
 # parses the rpk command output and produces true/false or exit 1 depending on the output
 function create_topic() {
-  topic=$1
-  res=$(rpk topic create $topic 2>&1)
+
+  args=(${1//:/ })
+
+  topic=${args[0]}
+  partitions=${args[1]}
+
+  if [[ -n $topic && -n $partitions ]]; then
+    res=$(rpk topic create $topic -p $partitions 2>&1)
+  elif [[ -n $topic ]]; then
+    res=$(rpk topic create -p 1 $topic 2>&1)
+  else
+    echo "Bad input to create_topic function ${1}" >/dev/stderr
+    echo "Bad input to create_topic topic ${topic}" >/dev/stderr
+    echo "Bad input to create_topic topic ${partitions}" >/dev/stderr
+
+    exit 1
+  fi
+
   if [[ $res =~ "Topic with this name already exists" || $res =~ "Created topic" ]]; then
     echo "topic now exists: ${topic}"
     true
@@ -47,7 +64,7 @@ rpk_pid=$!
 # get length of topics array
 topicslength=${#topics[@]}
 
-# iterate over topics array and use until/sleep to repeatedly attempt to create topic until 
+# iterate over topics array and use until/sleep to repeatedly attempt to create topic until
 # create_topic() function returns true or exits the script with failure (1) return value
 for ((i = 0; i < ${topicslength}; i++)); do
   topic=${topics[$i]}
