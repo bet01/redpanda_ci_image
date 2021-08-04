@@ -1,6 +1,10 @@
 FROM docker.vectorized.io/vectorized/redpanda:v21.5.7
 
+USER root
+
 RUN apt-get install -y curl
+
+USER redpanda
 
 ENV CREATE_TOPICS=""
 
