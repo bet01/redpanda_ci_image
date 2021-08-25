@@ -4,6 +4,9 @@ set -e -u
 
 CREATE_TOPICS=$@
 
+## Override as you see fit. Useful values are 'info' or 'trace'.
+DEFAULT_LOG_LEVEL=${DEFAULT_LOG_LEVEL:-info}
+
 echo "initializing redpanda-init wrapper with args: $@"
 echo "creating the following topics: ${CREATE_TOPICS}"
 
@@ -57,6 +60,7 @@ function create_topic() {
   --node-id \
   "0" \
   --kafka-addr \
+  --default-log-level=$DEFAULT_LOG_LEVEL \
   PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092 \
   --advertise-kafka-addr \
   PLAINTEXT://$(hostname -f):29092,OUTSIDE://127.0.0.1:9092 &
