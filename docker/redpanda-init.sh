@@ -59,8 +59,8 @@ function create_topic() {
   start \
   --node-id \
   "0" \
-  --kafka-addr \
   --default-log-level=$DEFAULT_LOG_LEVEL \
+  --kafka-addr \
   PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092 \
   --advertise-kafka-addr \
   PLAINTEXT://$(hostname -f):29092,OUTSIDE://127.0.0.1:9092 &
