@@ -41,7 +41,7 @@ function create_topic() {
 
   res=$(rpk topic create $topic -p $partitions 2>&1)
 
-  if [[ $res =~ "Topic with this name already exists" || $res =~ "Created topic" ]]; then
+  if [[ $res =~ "Topic with this name already exists" || $res =~ "Created topic" || $res =~ "OK" ]]; then
     echo "topic now exists: ${topic}"
     true
   elif [[ $res =~ "Error: couldn't connect" ]]; then
@@ -73,6 +73,8 @@ topicslength=${#topics[@]}
 
 # iterate over topics array and use until/sleep to repeatedly attempt to create topic until
 # create_topic() function returns true or exits the script with failure (1) return value
+sleep 5
+
 for ((i = 0; i < ${topicslength}; i++)); do
   topic=${topics[$i]}
   until create_topic $topic; do
