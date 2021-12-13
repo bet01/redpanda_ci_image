@@ -1,4 +1,4 @@
-FROM docker.vectorized.io/vectorized/redpanda:v21.10.2
+FROM docker.vectorized.io/vectorized/redpanda:v21.11.1
 
 USER root
 
